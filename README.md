@@ -37,19 +37,36 @@ The maximum possible groupings of adjacent ones are already shown in the figure.
 /* write all the steps invloved */
 
 **PROGRAM**<br>
-module exp6(S,R,clk,Q,Qbar);<br> 
- input S,R, clk;<br> 
- output reg Q;<br> 
- output reg Qbar;<br> 
- initial Q=0;<br> 
- initial Qbar=1;<br> 
- always @(posedge clk)<br>
- begin<br>
- Q=S|((~R) &Q);<br>
- Qbar=R|((~S)&(Qbar));<br> 
- end<br>
- endmodule<br>
-
+module srflipflop(s, r, clk, rst, q, qbar);<br>
+    input s;<br> 
+    input r;<br> 
+    input clk;<br>
+    input rst;<br> 
+    output q;<br>
+    output qbar;<br> 
+  reg q,qbar;<br> 
+  always @ (posedge(clk) or posedge(rst)) begin<br> 
+  if(rst==1'b1) begin<br> 
+  q= 1'b0;qbar= 1'b1;<br>
+  end<br>
+  else if(s==1'b0 && r==1'b0)<br> 
+   begin<br> 
+  q=q; qbar=qbar;<br> 
+  end<br> 
+   else if(s==1'b0 && r==1'b1)<br> 
+    begin<br> 
+  q= 1'b0; qbar= 1'b1;<br> 
+  end<br> 
+    else if(s==1'b1 && r==1'b0)<br> 
+    begin<br> 
+  q= 1'b1; qbar= 1'b0;<br> 
+  end<br> 
+  else<br> 
+  begin<br>  
+  q=1'bx;qbar=1'bx;<br> 
+  end<br> 
+  end<br> 
+endmodule<br>
 /* Program for flipflops and verify its truth table in quartus using Verilog programming. Developed by:HARIHARASUDHAN N RegisterNumber:24900208
 */
 
