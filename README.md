@@ -37,36 +37,55 @@ The maximum possible groupings of adjacent ones are already shown in the figure.
 /* write all the steps invloved */
 
 **PROGRAM**<br>
-module srflipflop(s, r, clk, rst, q, qbar);<br>
-    input s;<br> 
-    input r;<br> 
-    input clk;<br>
-    input rst;<br> 
-    output q;<br>
-    output qbar;<br> 
-  reg q,qbar;<br> 
-  always @ (posedge(clk) or posedge(rst)) begin<br> 
-  if(rst==1'b1) begin<br> 
-  q= 1'b0;qbar= 1'b1;<br>
-  end<br>
-  else if(s==1'b0 && r==1'b0)<br> 
-   begin<br> 
-  q=q; qbar=qbar;<br> 
-  end<br> 
-   else if(s==1'b0 && r==1'b1)<br> 
-    begin<br> 
-  q= 1'b0; qbar= 1'b1;<br> 
-  end<br> 
-    else if(s==1'b1 && r==1'b0)<br> 
-    begin<br> 
-  q= 1'b1; qbar= 1'b0;<br> 
-  end<br> 
-  else<br> 
-  begin<br>  
-  q=1'bx;qbar=1'bx;<br> 
-  end<br> 
-  end<br> 
+always @(posedge clk) begin<br>
+    case ({S, R})<br>
+        2'b00: begin<br>
+            Q <= Q;<br>
+            Qn <= Qn;<br>
+        end<br>
+        2'b01: begin<br>
+            Q <= 0;<br>
+            Qn <= 1;<br>
+        end<br>
+        2'b10: begin<br>
+            Q <= 1;<br>
+            Qn <= 0;<br>
+        end<br>
+        2'b11: begin<br>
+            Q <= 1'bx;<br>
+            Qn <= 1'bx;<br>
+        end<br>
+    endcase<br>
+end<br>
 endmodule<br>
+
+module SR_FlipFlop_tb; reg S; reg R; reg clk; wire Q; wire Qn;<br>
+
+SR_FlipFlop uut (<br>
+    .S(S),<br>
+    .R(R),<br>
+    .clk(clk),<br>
+    .Q(Q),<br>
+    .Qn(Qn)<br>
+);<br>
+
+initial begin<br>
+    clk = 0;<br>
+    forever #5 clk = ~clk;<br>
+end<br>
+
+initial begin<br>
+    $monitor("Time=%0t | S=%b, R=%b, Q=%b, Qn=%b", $time, S, R, Q, Qn);<br>
+
+    S = 0; R = 0; #10;
+    S = 0; R = 1; #10;
+    S = 1; R = 0; #10;
+    S = 1; R = 1; #10;
+
+    $finish;
+end<br>
+endmodule<br>
+
 /* Program for flipflops and verify its truth table in quartus using Verilog programming. Developed by:HARIHARASUDHAN N RegisterNumber:24900208
 */
 
